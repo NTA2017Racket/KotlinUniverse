@@ -15,6 +15,7 @@ class MyGame : ApplicationAdapter() {
     lateinit var background: BackgroundActor
     var objectsList: MutableList<SpaceObject> = mutableListOf()
     var playerList: MutableMap<Int, PlayerActor> = mutableMapOf()
+    var projectilesList: MutableList<ProjectileActor> = mutableListOf()
 
     val random = SecureRandom()
 
@@ -22,6 +23,7 @@ class MyGame : ApplicationAdapter() {
     lateinit var planetTexture: Texture
     lateinit var sunTexture: Texture
     lateinit var playerTexture: Texture
+    lateinit var projectileTexture: Texture
     lateinit var font: BitmapFont
 
     override fun create() {
@@ -32,9 +34,11 @@ class MyGame : ApplicationAdapter() {
         planetTexture = Texture("Planet.png")
         sunTexture = Texture("Sun.png")
         playerTexture = Texture("Player.png")
+        projectileTexture = Texture("Projectile.png")
         font = BitmapFont()
         createMap()
         createPlayers()
+        createProjectiles()
     }
 
     override fun render() {
@@ -97,6 +101,15 @@ class MyGame : ApplicationAdapter() {
             placePlayer(p)
             stage.addActor(p)
             playerList[i] = p
+        }
+    }
+
+    fun createProjectiles() {
+        for (i in 0..20) {
+            var p = ProjectileActor(playerList[i % 5 + 1]!!, projectileTexture)
+            p.accelerationY = 20f
+            stage.addActor(p)
+            projectilesList.add(p)
         }
     }
 }
