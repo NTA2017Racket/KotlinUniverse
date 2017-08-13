@@ -145,7 +145,7 @@ class MyGame : ApplicationAdapter() {
 
     fun createProjectiles() {
         for (i in 0..20) {
-            var p = ProjectileActor(playerList[i % 5 + 1]!!, projectileTexture)
+            var p = ProjectileActor(playerList[i % 5 + 1]!!, playerTexture)
             p.accelerationY = 20f
             stage.addActor(p)
             projectilesList.add(p)
