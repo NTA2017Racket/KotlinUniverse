@@ -2,10 +2,13 @@ package com.github.spacialcircumstances.universe
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import java.security.SecureRandom
 
@@ -28,6 +31,15 @@ class MyGame : ApplicationAdapter() {
 
     override fun create() {
         stage = Stage()
+        stage.addListener(object: InputListener() {
+            override fun keyDown(event: InputEvent?, keycode: Int): Boolean {
+                if(keycode == Input.Keys.ESCAPE) {
+                    Gdx.app.exit()
+                }
+                return true
+            }
+        })
+        Gdx.input.inputProcessor = stage
         background = BackgroundActor(Texture("Background.png"))
         stage.addActor(background)
         moonTexture = Texture("Moon.png")
