@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var playerColor: Color): Actor() {
+class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var playerColor: Color): CircleCollidingActor(20f) {
     var drawx = x - 10
     var drawy = y - 10
     var playerName: String = "player"

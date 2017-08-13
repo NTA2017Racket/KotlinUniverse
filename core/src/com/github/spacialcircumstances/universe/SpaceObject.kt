@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 
-class SpaceObject(val radius: Float, val tex: Texture): Actor() {
+class SpaceObject(radius: Float, val tex: Texture): CircleCollidingActor(radius) {
     var drawx = x - tex.width / 2
     var drawy = y - tex.height / 2
     override fun draw(batch: Batch?, parentAlpha: Float) {
