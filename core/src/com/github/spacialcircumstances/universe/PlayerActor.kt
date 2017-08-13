@@ -10,15 +10,16 @@ class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var pla
     var drawx = x - 10
     var drawy = y - 10
     var playerName: String = "player"
-    var playerEnergy: Int = 0
+    var playerEnergy: Float = 0f
     var playerId: Int = playerID
     override fun draw(batch: Batch?, parentAlpha: Float) {
         batch!!.color = playerColor
         font.color = playerColor
-        batch!!.draw(tex, drawx, drawy, 20f, 20f)
+        batch.draw(tex, drawx, drawy, 20f, 20f)
         font.draw(batch, playerName, playerId * 150f - 50f, 800f)
-        font.draw(batch, playerEnergy.toString(), playerId * 150f - 50f, 850f)
-        batch!!.color = Color.WHITE
+        var en = playerEnergy.toString()
+        font.draw(batch, en.substring(0, en.indexOf(".")), playerId * 150f - 50f, 850f)
+        batch.color = Color.WHITE
         font.color = Color.WHITE
     }
 
@@ -26,5 +27,9 @@ class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var pla
         super.setPosition(x, y)
         drawx = x - 10
         drawy = y - 10
+    }
+
+    override fun act(delta: Float) {
+        playerEnergy += delta * 2
     }
 }
