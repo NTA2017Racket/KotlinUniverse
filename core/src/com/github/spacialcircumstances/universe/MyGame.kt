@@ -57,8 +57,10 @@ class MyGame : ApplicationAdapter() {
         var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        stage.act(delta * 0.5f)
         handleCollisions()
-        stage.act(delta)
+        stage.act(delta * 0.5f)
+        handleCollisions()
         stage.draw()
     }
 
@@ -124,7 +126,6 @@ class MyGame : ApplicationAdapter() {
         }
         for (obj in objectsList) {
             if (pr.collides(obj)) {
-                println("obj")
                 return true
             }
         }
@@ -146,7 +147,8 @@ class MyGame : ApplicationAdapter() {
     fun createProjectiles() {
         for (i in 0..20) {
             var p = ProjectileActor(playerList[i % 5 + 1]!!, playerTexture)
-            p.accelerationY = 20f
+            p.accelerationY = 0f
+            p.velocityY = 200f
             stage.addActor(p)
             projectilesList.add(p)
         }
