@@ -2,6 +2,7 @@ package com.github.spacialcircumstances.universe
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -75,11 +76,24 @@ class MyGame : ApplicationAdapter() {
         p.setPosition(random.nextInt(1600).toFloat(), random.nextInt(900).toFloat())
     }
 
+    fun getPlayerColor(id: Int): Color {
+        return when(id) {
+            0 -> Color.WHITE
+            1 -> Color.RED
+            2 -> Color.BLUE
+            3 -> Color.GREEN
+            4 -> Color.YELLOW
+            5 -> Color.VIOLET
+            6 -> Color.LIGHT_GRAY
+            else -> Color.BLACK
+        }
+    }
+
     //Methods for testing. Remove at the end.
 
     fun createPlayers() {
-        for(i in 0..4) {
-            var p = PlayerActor(playerTexture, font, i)
+        for(i in 1..5) {
+            var p = PlayerActor(playerTexture, font, i, getPlayerColor(i))
             placePlayer(p)
             stage.addActor(p)
             playerList[i] = p
