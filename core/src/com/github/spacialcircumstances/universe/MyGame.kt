@@ -108,19 +108,24 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun handleCollisions() {
-        projectilesList = projectilesList.filter {
-            !collidesWithObjects(it)
-        }.toMutableList()
+        var toRemove = projectilesList.filter {
+            collidesWithObjects(it)
+        }
+        projectilesList.removeAll(toRemove)
+        toRemove.forEach({
+            it.remove()
+        })
     }
 
     fun collidesWithObjects(pr: ProjectileActor): Boolean {
         for (pl in playerList.values) {
-            if (pr.collides(pl)) {
+            if (pr.collides(pl) && pr.player != pl) {
                 return true
             }
         }
         for (obj in objectsList) {
             if (pr.collides(obj)) {
+                println("obj")
                 return true
             }
         }
