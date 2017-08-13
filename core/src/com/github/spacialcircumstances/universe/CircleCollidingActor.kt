@@ -9,7 +9,7 @@ open class CircleCollidingActor(var radius: Float): Actor() {
     }
 
     fun collides(other: CircleCollidingActor): Boolean {
-        return distsq(x, y, other.x, other.y) < radiussq + other.radiussq
+        return dist(x, y, other.x, other.y) < radius + other.radius
     }
 
     fun distsq(x1: Float, y1: Float, x2: Float, y2: Float): Double {

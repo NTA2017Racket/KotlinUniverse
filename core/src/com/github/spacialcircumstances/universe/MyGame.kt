@@ -31,9 +31,9 @@ class MyGame : ApplicationAdapter() {
 
     override fun create() {
         stage = Stage()
-        stage.addListener(object: InputListener() {
+        stage.addListener(object : InputListener() {
             override fun keyDown(event: InputEvent?, keycode: Int): Boolean {
-                if(keycode == Input.Keys.ESCAPE) {
+                if (keycode == Input.Keys.ESCAPE) {
                     Gdx.app.exit()
                 }
                 return true
@@ -51,12 +51,14 @@ class MyGame : ApplicationAdapter() {
         createMap()
         createPlayers()
         createProjectiles()
+        test()
     }
 
     override fun render() {
         var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        handleCollisions()
         stage.act(delta)
         stage.draw()
     }
@@ -74,7 +76,7 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun getObjectTexture(radius: Float): Texture {
-        if(radius < 25) {
+        if (radius < 25) {
             return moonTexture
         } else if (radius < 40) {
             return planetTexture
@@ -93,7 +95,7 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun getPlayerColor(id: Int): Color {
-        return when(id) {
+        return when (id) {
             0 -> Color.WHITE
             1 -> Color.RED
             2 -> Color.BLUE
@@ -105,10 +107,31 @@ class MyGame : ApplicationAdapter() {
         }
     }
 
+    fun handleCollisions() {
+        projectilesList = projectilesList.filter {
+            !collidesWithObjects(it)
+        }.toMutableList()
+    }
+
+    fun collidesWithObjects(pr: ProjectileActor): Boolean {
+        for (pl in playerList.values) {
+            if (pr.collides(pl)) {
+                return true
+            }
+        }
+        for (obj in objectsList) {
+            if (pr.collides(obj)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     //Methods for testing. Remove at the end.
 
     fun createPlayers() {
-        for(i in 1..5) {
+        for (i in 1..5) {
             var p = PlayerActor(playerTexture, font, i, getPlayerColor(i))
             placePlayer(p)
             stage.addActor(p)
@@ -123,5 +146,13 @@ class MyGame : ApplicationAdapter() {
             stage.addActor(p)
             projectilesList.add(p)
         }
+    }
+
+    fun test() {
+        var c1 = CircleCollidingActor(10f)
+        var c2 = CircleCollidingActor(20f)
+        c1.setPosition(10f, 10f)
+        c2.setPosition(20f, 20f)
+        println(c1.collides(c2))
     }
 }
