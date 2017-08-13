@@ -51,7 +51,6 @@ class MyGame : ApplicationAdapter() {
         createMap()
         createPlayers()
         createProjectiles()
-        test()
     }
 
     override fun render() {
@@ -151,13 +150,5 @@ class MyGame : ApplicationAdapter() {
             stage.addActor(p)
             projectilesList.add(p)
         }
-    }
-
-    fun test() {
-        var c1 = CircleCollidingActor(10f)
-        var c2 = CircleCollidingActor(20f)
-        c1.setPosition(10f, 10f)
-        c2.setPosition(20f, 20f)
-        println(c1.collides(c2))
     }
 }
