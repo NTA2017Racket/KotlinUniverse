@@ -16,8 +16,8 @@ class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var pla
         batch!!.color = playerColor
         font.color = playerColor
         batch!!.draw(tex, drawx, drawy, 20f, 20f)
-        font.draw(batch, playerName, playerId * 150f, 700f)
-        font.draw(batch, playerEnergy.toString(), playerId * 150f, 800f)
+        font.draw(batch, playerName, playerId * 150f - 50f, 800f)
+        font.draw(batch, playerEnergy.toString(), playerId * 150f - 50f, 850f)
         batch!!.color = Color.WHITE
         font.color = Color.WHITE
     }
