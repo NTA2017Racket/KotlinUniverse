@@ -110,7 +110,7 @@ class MyGame : ApplicationAdapter() {
 
     fun handleCollisions() {
         var toRemove = projectilesList.filter {
-            collidesWithObjects(it)
+            collidesWithObjects(it) || it.distanceSquaredTo(it.player) > 5000000
         }
         projectilesList.removeAll(toRemove)
         toRemove.forEach({
