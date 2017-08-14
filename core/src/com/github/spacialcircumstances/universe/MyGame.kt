@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -111,7 +112,7 @@ class MyGame : ApplicationAdapter() {
 
     fun handleCollisions() {
         var toRemove = projectilesList.filter {
-            collidesWithObjects(it) || it.distanceSquaredTo(it.player) > 5000000
+            collidesWithObjects(it)// || it.distanceSquaredTo(it.player) > 5000000
         }
         projectilesList.removeAll(toRemove)
         toRemove.forEach({
@@ -136,11 +137,17 @@ class MyGame : ApplicationAdapter() {
 
     fun applyGravity() {
         projectilesList.forEach({ pr ->
-            var nearest = objectsList.minBy({
-                it.distanceSquaredTo(pr)
+            pr.accelerationX = 0f
+            pr.accelerationY = 0f
+            objectsList.forEach({
+                var l = pr.distanceTo(it)
+                var distx = (it.x - pr.x) / l
+                var disty = (it.y - pr.y) / l
+                distx = distx * (1000 / (l * l))
+                disty = disty * (1000 / (l * l))
+                pr.accelerationX += distx.toFloat()
+                pr.accelerationY += disty.toFloat()
             })
-            pr.accelerationX = (nearest!!.x - pr.x) * 0.01f
-            pr.accelerationY = (nearest!!.y - pr.y) * 0.01f
         })
     }
 
@@ -159,7 +166,7 @@ class MyGame : ApplicationAdapter() {
         for (i in 0..20) {
             var p = ProjectileActor(playerList[i % 5 + 1]!!, playerTexture)
             p.accelerationY = 0f
-            p.velocityY = 20f
+            p.velocityY = 2f
             stage.addActor(p)
             projectilesList.add(p)
         }

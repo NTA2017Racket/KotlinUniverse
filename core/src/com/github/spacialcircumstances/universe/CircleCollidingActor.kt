@@ -23,4 +23,8 @@ open class CircleCollidingActor(var radius: Float): Actor() {
     fun distanceSquaredTo(other: Actor): Double {
         return distsq(x, y, other.x, other.y)
     }
+
+    fun distanceTo(other: Actor): Double {
+        return dist(x, y, other.x, other.y)
+    }
 }
