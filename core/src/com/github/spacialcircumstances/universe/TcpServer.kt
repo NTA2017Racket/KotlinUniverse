@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 class TcpServer(var port: Int) {
     var socket: ServerSocket = ServerSocket(port)
     var events: MutableList<TcpEvent> = mutableListOf()
-    var playerMap: MutableMap<Int, TcpPlayer> = mutableMapOf()
+    var socketMap: MutableMap<Int, Socket> = mutableMapOf()
     var lastId = 0
     fun start() {
         thread {
@@ -42,20 +42,19 @@ class TcpServer(var port: Int) {
     }
 
     private fun addPlayer(id: Int, s: Socket) {
-        var player = TcpPlayer(id, s)
-        playerMap[id] = player
+        socketMap[id] = s
         var event = TcpEvent(id, TcpEventTypes.PlayerJoined)
         events.add(event)
     }
 
     private fun removePlayer(id: Int) {
-        playerMap.remove(id)
+        socketMap.remove(id)
         var event = TcpEvent(id, TcpEventTypes.PlayerLeft)
         events.add(event)
     }
 
     private fun writeSocket(id: Int, message: String) {
-        val s = playerMap[id]!!.socket
+        val s = socketMap[id]!!
         if (s != null) {
             s.getOutputStream().write(message.toByteArray())
             s.getOutputStream().flush()
@@ -85,7 +84,6 @@ class TcpServer(var port: Int) {
     }
 
     private fun changePlayerName(id: Int, name: String) {
-        playerMap[id]!!.name = name
         var event = TcpEvent(id, TcpEventTypes.PlayerNameChange)
         event.data = name
         events.add(event)
@@ -104,7 +102,7 @@ class TcpServer(var port: Int) {
     }
 
     fun broadcastMessage(message: String) {
-        playerMap.keys.forEach({
+        socketMap.keys.forEach({
             writeSocket(it, message)
         })
     }
