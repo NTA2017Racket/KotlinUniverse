@@ -7,12 +7,12 @@ class SpaceObject(radius: Float, val tex: Texture): CircleCollidingActor(radius)
     var drawx = x - tex.width / 2
     var drawy = y - tex.height / 2
     override fun draw(batch: Batch?, parentAlpha: Float) {
-        batch!!.draw(tex, drawx, drawy, radius, radius)
+        batch!!.draw(tex, drawx, drawy, 2 * radius, 2 * radius)
     }
 
     override fun setPosition(x: Float, y: Float) {
         super.setPosition(x, y)
-        drawx = x - tex.width / 2
-        drawy = y - tex.height / 2
+        drawx = x - radius
+        drawy = y - radius
     }
 }

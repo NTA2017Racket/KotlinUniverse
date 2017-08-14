@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
-import java.security.SecureRandom
+import java.util.*
 
 class MyGame : ApplicationAdapter() {
     lateinit var stage: Stage
@@ -20,7 +20,7 @@ class MyGame : ApplicationAdapter() {
     var playerList: MutableMap<Int, PlayerActor> = mutableMapOf()
     var projectilesList: MutableList<ProjectileActor> = mutableListOf()
 
-    val random = SecureRandom()
+    val random = Random()
 
     lateinit var moonTexture: Texture
     lateinit var planetTexture: Texture
@@ -57,6 +57,7 @@ class MyGame : ApplicationAdapter() {
         var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        //applyGravity()
         stage.act(delta * 0.5f)
         handleCollisions()
         stage.act(delta * 0.5f)
@@ -65,7 +66,7 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun createMap() {
-        for (i in 0..20) {
+        for (i in 0..2) {
             var rad = random.nextInt(40) + 15f
             var posx = random.nextInt(1600)
             var posy = random.nextInt(900)
@@ -133,6 +134,16 @@ class MyGame : ApplicationAdapter() {
         return false
     }
 
+    fun applyGravity() {
+        projectilesList.forEach({ pr ->
+            var nearest = objectsList.minBy({
+                it.distanceSquaredTo(pr)
+            })
+            pr.accelerationX = (nearest!!.x - pr.x) * 0.01f
+            pr.accelerationY = (nearest!!.y - pr.y) * 0.01f
+        })
+    }
+
     //Methods for testing. Remove at the end.
 
     fun createPlayers() {
@@ -145,10 +156,11 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun createProjectiles() {
-        for (i in 0..20) {
+        for (i in 0..200) {
             var p = ProjectileActor(playerList[i % 5 + 1]!!, playerTexture)
+            p.setPosition(i * 8f, 0f)
             p.accelerationY = 0f
-            p.velocityY = 200f
+            p.velocityY = 20f
             stage.addActor(p)
             projectilesList.add(p)
         }
