@@ -151,6 +151,16 @@ class MyGame : ApplicationAdapter() {
         })
     }
 
+    fun spawnProjectile(id: Int, angle: Double) {
+        val player = playerList[id]!!
+        var pr = ProjectileActor(player, playerTexture)
+        pr.setPosition(player.x, player.y)
+        pr.velocityY = (100 * Math.cos(Math.toRadians(angle))).toFloat()
+        pr.velocityX = (100 * Math.sin(Math.toRadians(angle))).toFloat()
+        stage.addActor(pr)
+        projectilesList.add(pr)
+    }
+
     //Methods for testing. Remove at the end.
 
     fun createPlayers() {
@@ -164,11 +174,7 @@ class MyGame : ApplicationAdapter() {
 
     fun createProjectiles() {
         for (i in 0..20) {
-            var p = ProjectileActor(playerList[i % 5 + 1]!!, playerTexture)
-            p.accelerationY = 0f
-            p.velocityY = 2f
-            stage.addActor(p)
-            projectilesList.add(p)
+            spawnProjectile(i % 5 + 1, 90f.toDouble())
         }
     }
 }
