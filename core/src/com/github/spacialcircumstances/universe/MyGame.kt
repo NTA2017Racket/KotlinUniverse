@@ -29,6 +29,7 @@ class MyGame : ApplicationAdapter() {
     lateinit var playerTexture: Texture
     lateinit var projectileTexture: Texture
     lateinit var font: BitmapFont
+    var server = TcpServer(8080)
 
     override fun create() {
         stage = Stage()
@@ -50,14 +51,16 @@ class MyGame : ApplicationAdapter() {
         projectileTexture = Texture("Projectile.png")
         font = BitmapFont()
         createMap()
-        createPlayers()
-        createProjectiles()
+        server.start()
+        //createPlayers()
+        //createProjectiles()
     }
 
     override fun render() {
         var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        handleServerEvents()
         applyGravity()
         stage.act(delta * 0.5f)
         handleCollisions()
@@ -159,6 +162,39 @@ class MyGame : ApplicationAdapter() {
         pr.velocityX = (100 * Math.sin(Math.toRadians(angle))).toFloat()
         stage.addActor(pr)
         projectilesList.add(pr)
+    }
+
+    fun handleServerEvents() {
+        val events = server.retrieveEvents()
+        events.forEach({
+            val id = it.playerId
+            when(it.type) {
+                TcpEventTypes.PlayerJoined -> {
+                    createPlayer(id)
+                }
+                TcpEventTypes.PlayerLeft -> {
+                    removePlayer(id)
+                }
+                TcpEventTypes.PlayerNameChange -> {
+                    val p = playerList[id]!!
+                    p.playerName = it.data
+                }
+                TcpEventTypes.PlayerShoot -> {
+                    spawnProjectile(id, it.data.toDouble())
+                }
+            }
+        })
+    }
+
+    fun createPlayer(id: Int) {
+        var p = PlayerActor(playerTexture, font, id, getPlayerColor(id))
+        placePlayer(p)
+        stage.addActor(p)
+        playerList[id] = p
+    }
+
+    fun removePlayer(id: Int) {
+        playerList.remove(id)!!.remove()
     }
 
     //Methods for testing. Remove at the end.
