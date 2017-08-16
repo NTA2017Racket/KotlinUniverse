@@ -16,8 +16,9 @@ class TcpServer(var port: Int) {
     }
 
     private fun connectionLoop(server: ServerSocket) {
-        acceptConnections(server)
-        connectionLoop(server)
+        while(true) {
+            acceptConnections(server)
+        }
     }
 
     private fun acceptConnections(server: ServerSocket) {
@@ -64,11 +65,15 @@ class TcpServer(var port: Int) {
     private fun inOutLoop(id: Int, socket: Socket) {
         var reader = socket.getInputStream().reader()
         var input = reader.readText()
-        if (!socket.isInputShutdown) {
-            handleClientInput(id, socket, input)
-        } else {
-            socket.close()
-            removePlayer(id)
+        var isRunning = true
+        while(isRunning) {
+            if (!socket.isInputShutdown) {
+                handleClientInput(id, socket, input)
+            } else {
+                socket.close()
+                removePlayer(id)
+                isRunning = false
+            }
         }
     }
 
@@ -80,7 +85,6 @@ class TcpServer(var port: Int) {
                 shootProjectile(id, input)
             }
         }
-        inOutLoop(id, socket)
     }
 
     private fun changePlayerName(id: Int, name: String) {
