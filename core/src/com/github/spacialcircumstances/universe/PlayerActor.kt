@@ -12,6 +12,8 @@ class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var pla
     var playerName: String = "player"
     var playerEnergy: Float = 0f
     var playerId: Int = playerID
+    var deathStat: Int = 0
+    var killStat: Int = 0
     override fun draw(batch: Batch?, parentAlpha: Float) {
         batch!!.color = playerColor
         font.color = playerColor

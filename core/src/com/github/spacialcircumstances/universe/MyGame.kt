@@ -207,6 +207,8 @@ class MyGame : ApplicationAdapter() {
 
     fun handleKill(pr: ProjectileActor, killed: PlayerActor) {
         val killer = pr.player
+        killer.killStat++
+        killed.deathStat++
         placePlayer(killed)
         server.broadcastMessage(killer.name + " killed " + killed.name + "!")
     }
