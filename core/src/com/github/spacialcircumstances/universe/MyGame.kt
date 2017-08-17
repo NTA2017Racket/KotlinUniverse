@@ -156,12 +156,17 @@ class MyGame : ApplicationAdapter() {
 
     fun spawnProjectile(id: Int, angle: Double) {
         val player = playerList[id]!!
-        var pr = ProjectileActor(player, playerTexture)
-        pr.setPosition(player.x, player.y)
-        pr.velocityY = (100 * Math.cos(Math.toRadians(angle))).toFloat()
-        pr.velocityX = (100 * Math.sin(Math.toRadians(angle))).toFloat()
-        stage.addActor(pr)
-        projectilesList.add(pr)
+        if (player.playerEnergy > 20) {
+            player.playerEnergy -= 20
+            var pr = ProjectileActor(player, playerTexture)
+            pr.setPosition(player.x, player.y)
+            pr.velocityY = (100 * Math.cos(Math.toRadians(angle))).toFloat()
+            pr.velocityX = (100 * Math.sin(Math.toRadians(angle))).toFloat()
+            stage.addActor(pr)
+            projectilesList.add(pr)
+        } else {
+            server.sendMessage(id, "Not enough energy")
+        }
     }
 
     fun handleServerEvents() {
@@ -169,7 +174,7 @@ class MyGame : ApplicationAdapter() {
         events.forEach({
             val id = it.playerId
             println(it.type)
-            when(it.type) {
+            when (it.type) {
                 TcpEventTypes.PlayerJoined -> {
                     createPlayer(id)
                 }
