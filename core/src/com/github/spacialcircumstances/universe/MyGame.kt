@@ -126,6 +126,7 @@ class MyGame : ApplicationAdapter() {
     fun collidesWithObjects(pr: ProjectileActor): Boolean {
         for (pl in playerList.values) {
             if (pr.collides(pl) && pr.player != pl) {
+                handleKill(pr, pl)
                 return true
             }
         }
@@ -202,6 +203,12 @@ class MyGame : ApplicationAdapter() {
 
     fun removePlayer(id: Int) {
         playerList.remove(id)!!.remove()
+    }
+
+    fun handleKill(pr: ProjectileActor, killed: PlayerActor) {
+        val killer = pr.player
+        placePlayer(killed)
+        server.broadcastMessage(killer.name + " killed " + killed.name + "!")
     }
 
     //Methods for testing. Remove at the end.
