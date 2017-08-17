@@ -168,6 +168,7 @@ class MyGame : ApplicationAdapter() {
         val events = server.retrieveEvents()
         events.forEach({
             val id = it.playerId
+            println(it.type)
             when(it.type) {
                 TcpEventTypes.PlayerJoined -> {
                     createPlayer(id)
@@ -178,6 +179,7 @@ class MyGame : ApplicationAdapter() {
                 TcpEventTypes.PlayerNameChange -> {
                     val p = playerList[id]!!
                     p.playerName = it.data
+                    println("player changed name to " + it.data)
                 }
                 TcpEventTypes.PlayerShoot -> {
                     spawnProjectile(id, it.data.toDouble())

@@ -1,5 +1,7 @@
 package com.github.spacialcircumstances.universe
 
+import java.io.BufferedReader
+import java.io.DataInputStream
 import java.net.ServerSocket
 import java.net.Socket
 import kotlin.concurrent.thread
@@ -16,7 +18,7 @@ class TcpServer(var port: Int) {
     }
 
     private fun connectionLoop(server: ServerSocket) {
-        while(true) {
+        while (true) {
             acceptConnections(server)
         }
     }
@@ -63,31 +65,29 @@ class TcpServer(var port: Int) {
     }
 
     private fun inOutLoop(id: Int, socket: Socket) {
-        var reader = socket.getInputStream().reader()
-        var input = reader.readText()
+        var reader = BufferedReader(socket.getInputStream().reader())
         var isRunning = true
-        while(isRunning) {
-            if (!socket.isInputShutdown) {
+        while (isRunning) {
+            var input = reader.readLine()
+            if (input != null) {
                 handleClientInput(id, socket, input)
             } else {
-                socket.close()
-                removePlayer(id)
                 isRunning = false
+                removePlayer(id)
             }
         }
     }
 
     private fun handleClientInput(id: Int, socket: Socket, input: String) {
-        if (input.isNotEmpty()) {
-            if (input.startsWith("c ")) {
-                changePlayerName(id, input.substring(2))
-            } else if (input.toIntOrNull() != null) {
-                shootProjectile(id, input)
-            }
+        if (input.startsWith("c ")) {
+            changePlayerName(id, input.substring(2))
+        } else if (input.toIntOrNull() != null) {
+            shootProjectile(id, input)
         }
     }
 
     private fun changePlayerName(id: Int, name: String) {
+        println("Attempting to change name")
         var event = TcpEvent(id, TcpEventTypes.PlayerNameChange)
         event.data = name
         events.add(event)
