@@ -16,6 +16,7 @@ class MyGame : ApplicationAdapter() {
     lateinit var stage: Stage
 
     lateinit var background: BackgroundActor
+    lateinit var timer: TimerActor
     var objectsList: MutableList<SpaceObject> = mutableListOf()
     var playerList: MutableMap<Int, PlayerActor> = mutableMapOf()
     var projectilesList: MutableList<ProjectileActor> = mutableListOf()
@@ -49,6 +50,8 @@ class MyGame : ApplicationAdapter() {
         playerTexture = Texture("Player.png")
         projectileTexture = Texture("Projectile.png")
         font = BitmapFont()
+        timer = TimerActor(font)
+        stage.addActor(timer)
         startGame()
     }
 
@@ -61,6 +64,7 @@ class MyGame : ApplicationAdapter() {
         playerList.clear()
         objectsList.clear()
         createMap()
+        timer.resetTimer(120f)
         server.start()
     }
 
@@ -75,6 +79,9 @@ class MyGame : ApplicationAdapter() {
         stage.act(delta * 0.5f)
         handleCollisions()
         stage.draw()
+        if(timer.isFinished()) {
+            //Show end screen
+        }
     }
 
     fun createMap() {
