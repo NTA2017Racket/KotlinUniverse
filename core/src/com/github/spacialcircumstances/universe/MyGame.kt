@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -29,7 +28,7 @@ class MyGame : ApplicationAdapter() {
     lateinit var playerTexture: Texture
     lateinit var projectileTexture: Texture
     lateinit var font: BitmapFont
-    var server = TcpServer(8080)
+    lateinit var server: TcpServer
 
     override fun create() {
         stage = Stage()
@@ -50,10 +49,19 @@ class MyGame : ApplicationAdapter() {
         playerTexture = Texture("Player.png")
         projectileTexture = Texture("Projectile.png")
         font = BitmapFont()
+        startGame()
+    }
+
+    fun startGame() {
+        server = TcpServer(8080)
+        projectilesList.forEach({ it.remove() })
+        playerList.values.forEach({ it.remove() })
+        objectsList.forEach({ it.remove() })
+        projectilesList.clear()
+        playerList.clear()
+        objectsList.clear()
         createMap()
         server.start()
-        //createPlayers()
-        //createProjectiles()
     }
 
     override fun render() {
