@@ -14,14 +14,18 @@ import java.util.*
 
 class MyGame : ApplicationAdapter() {
     lateinit var stage: Stage
+    lateinit var endStage: Stage
 
     lateinit var background: BackgroundActor
+    lateinit var endBackground: BackgroundActor
     lateinit var timer: TimerActor
     var objectsList: MutableList<SpaceObject> = mutableListOf()
     var playerList: MutableMap<Int, PlayerActor> = mutableMapOf()
     var projectilesList: MutableList<ProjectileActor> = mutableListOf()
 
     val random = Random()
+
+    var endInit = false
 
     lateinit var moonTexture: Texture
     lateinit var planetTexture: Texture
@@ -42,8 +46,11 @@ class MyGame : ApplicationAdapter() {
             }
         })
         Gdx.input.inputProcessor = stage
+        endStage = Stage()
         background = BackgroundActor(Texture("Background.png"))
         stage.addActor(background)
+        endBackground = BackgroundActor(Texture("GameOver.png"))
+        endStage.addActor(endBackground)
         moonTexture = Texture("Moon.png")
         planetTexture = Texture("Planet.png")
         sunTexture = Texture("Sun.png")
@@ -63,6 +70,7 @@ class MyGame : ApplicationAdapter() {
         projectilesList.clear()
         playerList.clear()
         objectsList.clear()
+        endInit = false
         createMap()
         timer.resetTimer(120f)
         server.start()
@@ -72,15 +80,22 @@ class MyGame : ApplicationAdapter() {
         var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        handleServerEvents()
-        applyGravity()
-        stage.act(delta * 0.5f)
-        handleCollisions()
-        stage.act(delta * 0.5f)
-        handleCollisions()
-        stage.draw()
         if(timer.isFinished()) {
+            if(!endInit) {
+                Gdx.input.inputProcessor = endStage
+                endInit = true
+            }
             //Show end screen
+            endStage.act(delta)
+            endStage.draw()
+        } else {
+            handleServerEvents()
+            applyGravity()
+            stage.act(delta * 0.5f)
+            handleCollisions()
+            stage.act(delta * 0.5f)
+            handleCollisions()
+            stage.draw()
         }
     }
 
