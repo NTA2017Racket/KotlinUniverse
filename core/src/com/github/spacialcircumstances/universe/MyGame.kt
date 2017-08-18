@@ -19,6 +19,7 @@ class MyGame : ApplicationAdapter() {
     lateinit var background: BackgroundActor
     lateinit var endBackground: BackgroundActor
     lateinit var timer: TimerActor
+    lateinit var statsActor: StatsActor
     var objectsList: MutableList<SpaceObject> = mutableListOf()
     var playerList: MutableMap<Int, PlayerActor> = mutableMapOf()
     var projectilesList: MutableList<ProjectileActor> = mutableListOf()
@@ -59,6 +60,8 @@ class MyGame : ApplicationAdapter() {
         font = BitmapFont()
         timer = TimerActor(font)
         stage.addActor(timer)
+        statsActor = StatsActor(font)
+        endStage.addActor(statsActor)
         startGame()
     }
 
@@ -74,6 +77,7 @@ class MyGame : ApplicationAdapter() {
         createMap()
         timer.resetTimer(120f)
         server.start()
+        statsActor.reset()
     }
 
     override fun render() {
@@ -84,6 +88,7 @@ class MyGame : ApplicationAdapter() {
             if(!endInit) {
                 Gdx.input.inputProcessor = endStage
                 endInit = true
+                statsActor.initialize(playerList.values)
             }
             //Show end screen
             endStage.act(delta)
