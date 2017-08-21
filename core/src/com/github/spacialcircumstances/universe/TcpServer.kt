@@ -13,10 +13,15 @@ class TcpServer(var port: Int) {
     var serverThread = thread {
         connectionLoop(socket)
     }
+
     fun start() {
         lastId = 0
         events.clear()
         socketMap.clear()
+    }
+
+    private fun getSocket(id: Int): Socket {
+        return socketMap[id]!!
     }
 
     private fun connectionLoop(server: ServerSocket) {
@@ -35,10 +40,15 @@ class TcpServer(var port: Int) {
 
     private fun handle(socket: Socket) {
         var id = retrievePlayerId()
-        addPlayer(id, socket)
-        println("Player " + id.toString() + " added!")
-        writeSocket(id, "Welcome Player!")
-        inOutLoop(id, socket)
+        if (id < 6) {
+            addPlayer(id, socket)
+            println("Player " + id.toString() + " added!")
+            writeSocket(getSocket(id), "Welcome Player!")
+            inOutLoop(id, socket)
+        } else {
+            println("Game is full!")
+            writeSocket(socket, "Game is already full, sorry!")
+        }
     }
 
     private fun retrievePlayerId(): Int {
@@ -58,12 +68,10 @@ class TcpServer(var port: Int) {
         events.add(event)
     }
 
-    private fun writeSocket(id: Int, message: String) {
-        val s = socketMap[id]!!
-        if (s != null) {
-            s.getOutputStream().write(message.toByteArray())
-            s.getOutputStream().flush()
-        }
+    private fun writeSocket(s: Socket, message: String) {
+        s.getOutputStream().write(message.toByteArray())
+        s.getOutputStream().flush()
+
     }
 
     private fun inOutLoop(id: Int, socket: Socket) {
@@ -109,11 +117,11 @@ class TcpServer(var port: Int) {
 
     fun broadcastMessage(message: String) {
         socketMap.keys.forEach({
-            writeSocket(it, message)
+            writeSocket(getSocket(it), message)
         })
     }
 
     fun sendMessage(id: Int, message: String) {
-        writeSocket(id, message)
+        writeSocket(getSocket(id), message)
     }
 }
