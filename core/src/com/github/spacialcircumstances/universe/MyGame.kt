@@ -112,7 +112,7 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun createMap() {
-        for (i in 0..2) {
+        for (i in 0..10) {
             var rad = random.nextInt(40) + 15f
             var posx = random.nextInt(1600)
             var posy = random.nextInt(900)
@@ -139,7 +139,8 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun placePlayer(p: PlayerActor) {
-        p.setPosition(random.nextInt(1600).toFloat(), random.nextInt(900).toFloat())
+        p.setPosition(random.nextInt(1400).toFloat() + 100, random.nextInt(700).toFloat() + 100)
+        p.playerEnergy += 10
     }
 
     fun getPlayerColor(id: Int): Color {
@@ -242,7 +243,8 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun createPlayer(id: Int) {
-        var p = PlayerActor(playerTexture, font, id, getPlayerColor(id))
+        val p = PlayerActor(playerTexture, font, id, getPlayerColor(id))
+        p.playerEnergy = 20f
         placePlayer(p)
         stage.addActor(p)
         playerList[id] = p
@@ -258,22 +260,5 @@ class MyGame : ApplicationAdapter() {
         killed.deathStat++
         placePlayer(killed)
         server.broadcastMessage(killer.name + " killed " + killed.name + "!")
-    }
-
-    //Methods for testing. Remove at the end.
-
-    fun createPlayers() {
-        for (i in 1..5) {
-            var p = PlayerActor(playerTexture, font, i, getPlayerColor(i))
-            placePlayer(p)
-            stage.addActor(p)
-            playerList[i] = p
-        }
-    }
-
-    fun createProjectiles() {
-        for (i in 0..20) {
-            spawnProjectile(i % 5 + 1, 90f.toDouble())
-        }
     }
 }
