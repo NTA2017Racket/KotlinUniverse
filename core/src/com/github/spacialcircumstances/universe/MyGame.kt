@@ -81,7 +81,7 @@ class MyGame : ApplicationAdapter() {
         objectsList.clear()
         endInit = false
         createMap()
-        timer.resetTimer(20f)
+        timer.resetTimer(300f)
         server.start()
         statsActor.reset()
     }
