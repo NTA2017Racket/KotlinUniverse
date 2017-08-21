@@ -81,7 +81,7 @@ class MyGame : ApplicationAdapter() {
         objectsList.clear()
         endInit = false
         createMap()
-        timer.resetTimer(120f)
+        timer.resetTimer(20f)
         server.start()
         statsActor.reset()
     }
@@ -259,6 +259,6 @@ class MyGame : ApplicationAdapter() {
         killer.killStat++
         killed.deathStat++
         placePlayer(killed)
-        server.broadcastMessage(killer.name + " killed " + killed.name + "!")
+        server.broadcastMessage(killer.playerName + " killed " + killed.playerName + "!")
     }
 }
