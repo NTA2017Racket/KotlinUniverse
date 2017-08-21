@@ -17,7 +17,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.0'
+    version = '0.1.0'
     ext {
         appName = "KotlinUniverse"
         gdxVersion = '1.9.6'
