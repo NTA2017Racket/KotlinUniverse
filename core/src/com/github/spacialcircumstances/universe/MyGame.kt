@@ -157,7 +157,7 @@ class MyGame : ApplicationAdapter() {
 
     fun handleCollisions() {
         var toRemove = projectilesList.filter {
-            collidesWithObjects(it)// || it.distanceSquaredTo(it.player) > 5000000
+            collidesWithObjects(it) || it.distanceSquaredTo(it.player) > 5000000
         }
         projectilesList.removeAll(toRemove)
         toRemove.forEach({
@@ -183,17 +183,22 @@ class MyGame : ApplicationAdapter() {
 
     fun applyGravity() {
         projectilesList.forEach({ pr ->
-            pr.accelerationX = 0f
-            pr.accelerationY = 0f
-            objectsList.forEach({
-                var l = pr.distanceTo(it)
-                var distx = (it.x - pr.x) / l
-                var disty = (it.y - pr.y) / l
-                distx = distx * (1000 / (l * l))
-                disty = disty * (1000 / (l * l))
-                pr.accelerationX += distx.toFloat()
-                pr.accelerationY += disty.toFloat()
-            })
+            pr.accelerationX =
+            objectsList.map {
+                var vx = it.x - pr.x
+                val l = it.distanceTo(pr).toFloat()
+                vx /= l
+                vx *= it.mass / (l * l)
+
+                vx
+            }.sum()
+            pr.accelerationY = objectsList.map {
+                var vy = it.y - pr.y
+                val l = it.distanceTo(pr).toFloat()
+                vy /= l
+                vy *= it.mass / (l * l)
+                vy
+            }.sum()
         })
     }
 
