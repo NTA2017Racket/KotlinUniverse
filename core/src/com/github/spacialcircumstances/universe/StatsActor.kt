@@ -20,8 +20,13 @@ class StatsActor(var font: BitmapFont): Actor() {
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
-        statsDisplay.forEach({
-            font.draw(batch, it, 100f, 800f - (statsDisplay.indexOf(it) * 40))
-        })
+        for(i in 0..(statsDisplay.size - 1)) {
+            val p = i % 3
+            if (p < 3) {
+                font.draw(batch, statsDisplay[i], 100f, 800f - (i * 40f))
+            }            else {
+                font.draw(batch, statsDisplay[i], 400f, 800f - ((i - 9) * 40f))
+            }
+        }
     }
 }
