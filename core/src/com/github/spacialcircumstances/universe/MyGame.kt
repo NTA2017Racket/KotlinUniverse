@@ -48,6 +48,12 @@ class MyGame : ApplicationAdapter() {
         })
         Gdx.input.inputProcessor = stage
         endStage = Stage()
+        endStage.addListener(object: InputListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                startGame()
+                return true
+            }
+        })
         background = BackgroundActor(Texture("Background.png"))
         stage.addActor(background)
         endBackground = BackgroundActor(Texture("GameOver.png"))
@@ -62,11 +68,11 @@ class MyGame : ApplicationAdapter() {
         stage.addActor(timer)
         statsActor = StatsActor(font)
         endStage.addActor(statsActor)
+        server = TcpServer(8080)
         startGame()
     }
 
     fun startGame() {
-        server = TcpServer(8080)
         projectilesList.forEach({ it.remove() })
         playerList.values.forEach({ it.remove() })
         objectsList.forEach({ it.remove() })
@@ -89,6 +95,7 @@ class MyGame : ApplicationAdapter() {
                 Gdx.input.inputProcessor = endStage
                 endInit = true
                 statsActor.initialize(playerList.values)
+                server.broadcastMessage("Match ended!")
             }
             //Show end screen
             endStage.act(delta)

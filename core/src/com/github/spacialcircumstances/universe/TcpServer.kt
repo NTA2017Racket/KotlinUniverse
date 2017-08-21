@@ -1,7 +1,6 @@
 package com.github.spacialcircumstances.universe
 
 import java.io.BufferedReader
-import java.io.DataInputStream
 import java.net.ServerSocket
 import java.net.Socket
 import kotlin.concurrent.thread
@@ -11,10 +10,13 @@ class TcpServer(var port: Int) {
     var events: MutableList<TcpEvent> = mutableListOf()
     var socketMap: MutableMap<Int, Socket> = mutableMapOf()
     var lastId = 0
+    var serverThread = thread {
+        connectionLoop(socket)
+    }
     fun start() {
-        thread {
-            connectionLoop(socket)
-        }
+        lastId = 0
+        events.clear()
+        socketMap.clear()
     }
 
     private fun connectionLoop(server: ServerSocket) {
