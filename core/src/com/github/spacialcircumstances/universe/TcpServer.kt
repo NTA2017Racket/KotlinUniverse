@@ -83,7 +83,7 @@ class TcpServer(var port: Int) {
     private fun handleClientInput(id: Int, socket: Socket, input: String) {
         if (input.startsWith("c ")) {
             changePlayerName(id, input.substring(2))
-        } else if (input.toIntOrNull() != null) {
+        } else if (input.toFloatOrNull() != null) {
             shootProjectile(id, input)
         }
     }
