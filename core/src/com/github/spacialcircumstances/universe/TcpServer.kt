@@ -9,13 +9,14 @@ class TcpServer(var port: Int) {
     var socket: ServerSocket = ServerSocket(port)
     var events: MutableList<TcpEvent> = mutableListOf()
     var socketMap: MutableMap<Int, Socket> = mutableMapOf()
-    var lastId = 0
+    var playerCount = 0
+    var unusedIds: MutableList<Int> = mutableListOf()
     var serverThread = thread {
         connectionLoop(socket)
     }
 
     fun start() {
-        lastId = 0
+        unusedIds = mutableListOf(1, 2, 3, 4, 5, 6)
         events.clear()
         socketMap.clear()
     }
@@ -39,9 +40,10 @@ class TcpServer(var port: Int) {
     }
 
     private fun handle(socket: Socket) {
-        var id = retrievePlayerId()
-        if (id < 6) {
+        if (playerCount < 6) {
+            val id = retrievePlayerId()
             addPlayer(id, socket)
+            playerCount++
             println("Player " + id.toString() + " added!")
             writeSocket(getSocket(id), "Welcome Player!")
             inOutLoop(id, socket)
@@ -52,8 +54,7 @@ class TcpServer(var port: Int) {
     }
 
     private fun retrievePlayerId(): Int {
-        lastId++
-        return lastId
+        return unusedIds.removeAt(0)
     }
 
     private fun addPlayer(id: Int, s: Socket) {
@@ -64,6 +65,9 @@ class TcpServer(var port: Int) {
 
     private fun removePlayer(id: Int) {
         socketMap.remove(id)
+        playerCount--
+        unusedIds.add(id)
+        unusedIds.sort()
         var event = TcpEvent(id, TcpEventTypes.PlayerLeft)
         events.add(event)
     }
