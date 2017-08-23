@@ -93,10 +93,14 @@ class TcpServer(var port: Int) {
     }
 
     private fun handleClientInput(id: Int, socket: Socket, input: String) {
-        if (input.startsWith("c ")) {
-            changePlayerName(id, input.substring(2))
-        } else if (input.toFloatOrNull() != null) {
-            shootProjectile(id, input)
+        val firstChar = input.firstOrNull { c -> isAlphanumeric(c) }
+        if(firstChar != null) {
+            var truncInput = input.substring(input.indexOf(firstChar))
+            if (truncInput.startsWith("c ")) {
+                changePlayerName(id, truncInput.substring(2))
+            } else if (truncInput.toFloatOrNull() != null) {
+                shootProjectile(id, truncInput)
+            }
         }
     }
 
@@ -127,5 +131,9 @@ class TcpServer(var port: Int) {
 
     fun sendMessage(id: Int, message: String) {
         writeSocket(getSocket(id), message)
+    }
+
+    private fun isAlphanumeric(c: Char): Boolean {
+        return !(c.toInt() < 0x30 || c.toInt() >= 0x3a && c.toInt() <= 0x40 || c.toInt() > 0x5a && c.toInt() <= 0x60 || c.toInt() > 0x7a)
     }
 }
