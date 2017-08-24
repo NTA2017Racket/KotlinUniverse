@@ -221,7 +221,7 @@ class MyGame : ApplicationAdapter() {
         val player = playerList[id]!!
         if (player.playerEnergy > 20) {
             player.playerEnergy -= 20
-            var pr = ProjectileActor(player, playerTexture)
+            var pr = ProjectileActor(player, projectileTexture)
             pr.setPosition(player.x, player.y)
             pr.velocityY = (100 * Math.cos(Math.toRadians(angle))).toFloat()
             pr.velocityX = (100 * Math.sin(Math.toRadians(angle))).toFloat()
