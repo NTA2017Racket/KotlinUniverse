@@ -266,6 +266,13 @@ class MyGame : ApplicationAdapter() {
 
     fun removePlayer(id: Int) {
         playerList.remove(id)!!.remove()
+        val playerProjectiles = projectilesList.filter {
+            it.player.playerId == id
+        }
+        projectilesList.removeAll(playerProjectiles)
+        playerProjectiles.forEach({
+            it.remove()
+        })
     }
 
     fun handleKill(pr: ProjectileActor, killed: PlayerActor) {
