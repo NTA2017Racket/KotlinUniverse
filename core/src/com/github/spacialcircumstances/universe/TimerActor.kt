@@ -15,7 +15,7 @@ class TimerActor(var font: BitmapFont): Actor() {
     override fun draw(batch: Batch?, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
         font.color = Color.CYAN
-        font.draw(batch, gameTime.toString(), 20f, 20f)
+        font.draw(batch, formatTime(gameTime), 20f, 20f)
         font.color = Color.WHITE
     }
 
@@ -25,5 +25,13 @@ class TimerActor(var font: BitmapFont): Actor() {
 
     fun isFinished(): Boolean {
         return gameTime < 0
+    }
+
+    private fun formatTime(time: Float): String {
+        val min = (time / 60).toString()
+        val minString = min.substring(0, min.indexOf("."))
+        val sec = (time % 60).toString()
+        val secString = sec.substring(0, sec.indexOf("."))
+        return minString + ":" + secString
     }
 }
