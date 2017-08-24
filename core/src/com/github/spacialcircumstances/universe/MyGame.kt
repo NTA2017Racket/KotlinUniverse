@@ -48,7 +48,7 @@ class MyGame : ApplicationAdapter() {
         })
         Gdx.input.inputProcessor = stage
         endStage = Stage()
-        endStage.addListener(object: InputListener() {
+        endStage.addListener(object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 startGame()
                 return true
@@ -90,8 +90,8 @@ class MyGame : ApplicationAdapter() {
         var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        if(timer.isFinished()) {
-            if(!endInit) {
+        if (timer.isFinished()) {
+            if (!endInit) {
                 Gdx.input.inputProcessor = endStage
                 endInit = true
                 statsActor.initialize(playerList.values)
@@ -139,8 +139,22 @@ class MyGame : ApplicationAdapter() {
     }
 
     fun placePlayer(p: PlayerActor) {
-        p.setPosition(random.nextInt(1400).toFloat() + 100, random.nextInt(700).toFloat() + 100)
+        var x = 0f
+        var y = 0f
+        do {
+            x = random.nextInt(1400) + 100f
+            y = random.nextInt(700) + 100f
+        } while (!positionIsValid(x, y))
+        p.setPosition(x, y)
         p.playerEnergy += 10
+    }
+
+    private fun positionIsValid(x: Float, y: Float): Boolean {
+        return objectsList.filter {
+            it.dist(it.x, it.y, x, y) < 200f
+        }.isEmpty() && playerList.values.filter {
+            it.dist(it.x, it.y, x, y) < 200f
+        }.isEmpty()
     }
 
     fun getPlayerColor(id: Int): Color {
@@ -185,14 +199,14 @@ class MyGame : ApplicationAdapter() {
     fun applyGravity() {
         projectilesList.forEach({ pr ->
             pr.accelerationX =
-            objectsList.map {
-                var vx = it.x - pr.x
-                val l = it.distanceTo(pr).toFloat()
-                vx /= l
-                vx *= it.mass / (l * l)
+                    objectsList.map {
+                        var vx = it.x - pr.x
+                        val l = it.distanceTo(pr).toFloat()
+                        vx /= l
+                        vx *= it.mass / (l * l)
 
-                vx
-            }.sum()
+                        vx
+                    }.sum()
             pr.accelerationY = objectsList.map {
                 var vy = it.y - pr.y
                 val l = it.distanceTo(pr).toFloat()
