@@ -81,7 +81,7 @@ class MyGame : ApplicationAdapter() {
         objectsList.clear()
         endInit = false
         createMap()
-        timer.resetTimer(300f)
+        timer.resetTimer(360f)
         server.start()
         statsActor.reset()
     }
@@ -146,7 +146,7 @@ class MyGame : ApplicationAdapter() {
             y = random.nextInt(700) + 100f
         } while (!positionIsValid(x, y))
         p.setPosition(x, y)
-        p.playerEnergy += 10
+        p.playerEnergy += 15
     }
 
     private fun positionIsValid(x: Float, y: Float): Boolean {
@@ -258,7 +258,7 @@ class MyGame : ApplicationAdapter() {
 
     fun createPlayer(id: Int) {
         val p = PlayerActor(playerTexture, font, id, getPlayerColor(id))
-        p.playerEnergy = 20f
+        p.playerEnergy = 25f
         placePlayer(p)
         stage.addActor(p)
         playerList[id] = p

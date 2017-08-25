@@ -32,6 +32,6 @@ class PlayerActor(var tex: Texture, var font: BitmapFont, playerID: Int, var pla
     }
 
     override fun act(delta: Float) {
-        playerEnergy += delta * 2
+        playerEnergy += delta * 1.6f
     }
 }
