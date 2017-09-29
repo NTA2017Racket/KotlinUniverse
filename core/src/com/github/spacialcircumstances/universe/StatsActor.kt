@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-class StatsActor(var font: BitmapFont) : Actor() {
+class StatsActor(private val font: BitmapFont) : Actor() {
     var statsDisplay: MutableList<String> = mutableListOf()
     var colorDisplay: MutableList<Color> = mutableListOf()
     fun initialize(players: Collection<PlayerActor>) {

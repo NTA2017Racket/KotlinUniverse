@@ -3,7 +3,7 @@ package com.github.spacialcircumstances.universe
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 
-class SpaceObject(radius: Float, val tex: Texture): CircleCollidingActor(radius) {
+class SpaceObject(radius: Float, private val tex: Texture): CircleCollidingActor(radius) {
     var drawx = x - radius
     var drawy = y - radius
     var mass = (radius * radius * radius) * 3f
