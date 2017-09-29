@@ -16,7 +16,7 @@ class TcpServer(var port: Int) {
     }
 
     fun start() {
-        unusedIds = mutableListOf(1, 2, 3, 4, 5, 6)
+        unusedIds = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8)
         events.clear()
         socketMap.clear()
     }
@@ -40,7 +40,7 @@ class TcpServer(var port: Int) {
     }
 
     private fun handle(socket: Socket) {
-        if (playerCount < 6) {
+        if (playerCount < 8) {
             val id = retrievePlayerId()
             addPlayer(id, socket)
             playerCount++

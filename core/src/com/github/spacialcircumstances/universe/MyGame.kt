@@ -166,6 +166,8 @@ class MyGame : ApplicationAdapter() {
             4 -> Color.YELLOW
             5 -> Color.VIOLET
             6 -> Color.LIGHT_GRAY
+            7 -> Color.PINK
+            8 -> Color.ORANGE
             else -> Color.BLACK
         }
     }
