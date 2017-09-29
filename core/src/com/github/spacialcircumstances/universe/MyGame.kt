@@ -24,7 +24,7 @@ class MyGame : ApplicationAdapter() {
     var playerList: MutableMap<Int, PlayerActor> = mutableMapOf()
     var projectilesList: MutableList<ProjectileActor> = mutableListOf()
 
-    private val random = Random()
+    val random = Random()
 
     var endInit = false
 
@@ -87,7 +87,7 @@ class MyGame : ApplicationAdapter() {
     }
 
     override fun render() {
-        val delta = Gdx.graphics.deltaTime
+        var delta = Gdx.graphics.deltaTime
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         if (timer.isFinished()) {
@@ -111,7 +111,7 @@ class MyGame : ApplicationAdapter() {
         }
     }
 
-    private fun createMap() {
+    fun createMap() {
         for (i in 0..10) {
             var rad = random.nextInt(40) + 15f
             var posx = random.nextInt(1600)
@@ -123,13 +123,13 @@ class MyGame : ApplicationAdapter() {
         }
     }
 
-    private fun getObjectTexture(radius: Float): Texture {
-        return if (radius < 25) {
-            moonTexture
+    fun getObjectTexture(radius: Float): Texture {
+        if (radius < 25) {
+            return moonTexture
         } else if (radius < 40) {
-            planetTexture
+            return planetTexture
         } else {
-            sunTexture
+            return sunTexture
         }
 
     }
@@ -138,26 +138,26 @@ class MyGame : ApplicationAdapter() {
         stage.dispose()
     }
 
-    private fun placePlayer(p: PlayerActor) {
-        var x = random.nextInt(1400) + 100f
-        var y = random.nextInt(700) + 100f
-        while (!positionIsValid(x, y)) {
+    fun placePlayer(p: PlayerActor) {
+        var x = 0f
+        var y = 0f
+        do {
             x = random.nextInt(1400) + 100f
             y = random.nextInt(700) + 100f
-        }
+        } while (!positionIsValid(x, y))
         p.setPosition(x, y)
         p.playerEnergy += 15
     }
 
     private fun positionIsValid(x: Float, y: Float): Boolean {
-        return objectsList.count {
+        return objectsList.filter {
             it.dist(it.x, it.y, x, y) < 200f
-        } != 0 && playerList.values.count {
+        }.isEmpty() && playerList.values.filter {
             it.dist(it.x, it.y, x, y) < 200f
-        } != 0
+        }.isEmpty()
     }
 
-    private fun getPlayerColor(id: Int): Color {
+    fun getPlayerColor(id: Int): Color {
         return when (id) {
             0 -> Color.WHITE
             1 -> Color.RED
@@ -172,8 +172,8 @@ class MyGame : ApplicationAdapter() {
         }
     }
 
-    private fun handleCollisions() {
-        val toRemove = projectilesList.filter {
+    fun handleCollisions() {
+        var toRemove = projectilesList.filter {
             collidesWithObjects(it) || it.distanceSquaredTo(it.player) > 5000000
         }
         projectilesList.removeAll(toRemove)
@@ -182,24 +182,23 @@ class MyGame : ApplicationAdapter() {
         })
     }
 
-    private fun collidesWithObjects(pr: ProjectileActor): Boolean {
-        val players = playerList.values
-        players.forEach({
-            if (pr.collides(it) && pr.player != it) {
-                handleKill(pr, it)
+    fun collidesWithObjects(pr: ProjectileActor): Boolean {
+        for (pl in playerList.values) {
+            if (pr.collides(pl) && pr.player != pl) {
+                handleKill(pr, pl)
                 return true
             }
-        })
+        }
+        for (obj in objectsList) {
+            if (pr.collides(obj)) {
+                return true
+            }
+        }
 
-        objectsList.forEach({
-            if (pr.collides(it)) {
-                return true
-            }
-        })
         return false
     }
 
-    private fun applyGravity() {
+    fun applyGravity() {
         projectilesList.forEach({ pr ->
             pr.accelerationX =
                     objectsList.map {
@@ -220,11 +219,11 @@ class MyGame : ApplicationAdapter() {
         })
     }
 
-    private fun spawnProjectile(id: Int, angle: Double) {
+    fun spawnProjectile(id: Int, angle: Double) {
         val player = playerList[id]!!
         if (player.playerEnergy > 20) {
             player.playerEnergy -= 20
-            val pr = ProjectileActor(player, projectileTexture)
+            var pr = ProjectileActor(player, projectileTexture)
             pr.setPosition(player.x, player.y)
             pr.velocityY = (100 * Math.cos(Math.toRadians(angle))).toFloat()
             pr.velocityX = (100 * Math.sin(Math.toRadians(angle))).toFloat()
@@ -235,7 +234,7 @@ class MyGame : ApplicationAdapter() {
         }
     }
 
-    private fun handleServerEvents() {
+    fun handleServerEvents() {
         val events = server.retrieveEvents()
         events.forEach({
             val id = it.playerId
@@ -259,7 +258,7 @@ class MyGame : ApplicationAdapter() {
         })
     }
 
-    private fun createPlayer(id: Int) {
+    fun createPlayer(id: Int) {
         val p = PlayerActor(playerTexture, font, id, getPlayerColor(id))
         p.playerEnergy = 25f
         placePlayer(p)
@@ -267,7 +266,7 @@ class MyGame : ApplicationAdapter() {
         playerList[id] = p
     }
 
-    private fun removePlayer(id: Int) {
+    fun removePlayer(id: Int) {
         playerList.remove(id)!!.remove()
         val playerProjectiles = projectilesList.filter {
             it.player.playerId == id
@@ -278,7 +277,7 @@ class MyGame : ApplicationAdapter() {
         })
     }
 
-    private fun handleKill(pr: ProjectileActor, killed: PlayerActor) {
+    fun handleKill(pr: ProjectileActor, killed: PlayerActor) {
         val killer = pr.player
         killer.killStat++
         killed.deathStat++

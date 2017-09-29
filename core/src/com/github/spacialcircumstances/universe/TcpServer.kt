@@ -5,7 +5,7 @@ import java.net.ServerSocket
 import java.net.Socket
 import kotlin.concurrent.thread
 
-class TcpServer(val port: Int) {
+class TcpServer(var port: Int) {
     var socket: ServerSocket = ServerSocket(port)
     var events: MutableList<TcpEvent> = mutableListOf()
     var socketMap: MutableMap<Int, Socket> = mutableMapOf()
@@ -79,10 +79,10 @@ class TcpServer(val port: Int) {
     }
 
     private fun inOutLoop(id: Int, socket: Socket) {
-        val reader = BufferedReader(socket.getInputStream().reader())
+        var reader = BufferedReader(socket.getInputStream().reader())
         var isRunning = true
         while (isRunning) {
-            val input = reader.readLine()
+            var input = reader.readLine()
             if (input != null) {
                 handleClientInput(id, socket, input)
             } else {
@@ -95,7 +95,7 @@ class TcpServer(val port: Int) {
     private fun handleClientInput(id: Int, socket: Socket, input: String) {
         val firstChar = input.firstOrNull { c -> isAlphanumeric(c) }
         if(firstChar != null) {
-            val truncInput = input.substring(input.indexOf(firstChar))
+            var truncInput = input.substring(input.indexOf(firstChar))
             if (truncInput.startsWith("c ")) {
                 changePlayerName(id, truncInput.substring(2))
             } else if (truncInput.toFloatOrNull() != null) {

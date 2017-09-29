@@ -10,7 +10,7 @@ class ProjectileActor(var player: PlayerActor, var tex: Texture): CircleCollidin
     var velocityY = 0f
     var accelerationX = 0f
     var accelerationY = 0f
-    private val sprite = Sprite(tex, 0, 0, 10, 10)
+    val sprite = Sprite(tex, 0, 0, 10, 10)
     init {
         x = player.x
         y = player.y

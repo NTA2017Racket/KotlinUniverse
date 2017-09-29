@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-class TimerActor(private val font: BitmapFont): Actor() {
+class TimerActor(var font: BitmapFont): Actor() {
     private var gameTime: Float = 0f
     override fun act(delta: Float) {
         super.act(delta)
